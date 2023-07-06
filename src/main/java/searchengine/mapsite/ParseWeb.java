@@ -39,8 +39,13 @@ public class ParseWeb {
                 String link = element.absUrl("href");
                 Iterable<Page> pageIterable = pageRepository.findAll();
                 for (Page page : pageIterable) {
+                    System.out.println("Сравниваем: " + link + " = " + page.getPath());
                     if (isLink(link) && !isFile(link) && !page.getPath().contains(link) && !links.contains(link)) {
                         links.add(link);
+                        System.out.println("Добавляем страницу: " + link);
+                        page.setContent(Jsoup.connect(page.getPath()).get().text());
+                                            System.out.println("Добвляем страницу с текстом: " + Jsoup.connect(page.getPath()).get().text());
+                        pageRepository.save(page);
                     }
 
                 }

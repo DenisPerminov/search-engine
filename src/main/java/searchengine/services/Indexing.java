@@ -17,15 +17,22 @@ import java.util.ArrayList;
 
 public class Indexing {
 
-    public static ResponseEntity siteIndexing (SiteRepository siteRepository, PageRepository pageRepository, SitesList sitesList) {
+    public static ResponseEntity startIndexing(SiteRepository siteRepository, PageRepository pageRepository, SitesList sitesList) {
         MapSiteRecursive.setLinksPool(new ArrayList<>());
 
         for (SiteConf siteConf : sitesList.getSites()) {
             Integer id = deleteSite(siteConf.getName(), siteRepository);
             Site site = addSite(siteConf, siteRepository);
 
+            site.setStatus(Status.INDEXED);
+            site.setStatusTime(LocalDateTime.now());
+            siteRepository.save(site);
+
             try {
                 ArrayList<String> listUrl = MapCreate.create(site, pageRepository);
+                for (String ulrString : listUrl) {
+                    System.out.println(ulrString);
+                }
 
                 for (String path : listUrl) {
                     Page page = new Page();
@@ -33,6 +40,8 @@ public class Indexing {
                     page.setPath(path);
                     pageRepository.save(page);
                 }
+
+
             } catch (Exception ex) {
                 site.setStatusTime(LocalDateTime.now());
                 site.setStatus(Status.FAILED);
@@ -40,9 +49,7 @@ public class Indexing {
                 siteRepository.save(site);
                 continue;
             }
-            site.setStatus(Status.INDEXED);
-            site.setStatusTime(LocalDateTime.now());
-            siteRepository.save(site);
+
         }
         return  ResponseEntity.status(HttpStatus.OK).body(null);
     }

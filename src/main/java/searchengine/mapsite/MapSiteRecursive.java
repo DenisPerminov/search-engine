@@ -15,6 +15,7 @@ public class MapSiteRecursive extends RecursiveTask<ArrayList<String>> {
     private MapSite mapSite;
     private Site site;
     private static ArrayList<String> linksPool = new ArrayList();
+    private static ArrayList<Page> pagePool = new ArrayList<>();
     private SiteRepository siteRepository;
     private PageRepository pageRepository;
 
