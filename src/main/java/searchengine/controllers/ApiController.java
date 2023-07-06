@@ -15,6 +15,7 @@ import searchengine.model.Site;
 import searchengine.model.Status;
 import searchengine.repository.PageRepository;
 import searchengine.repository.SiteRepository;
+import searchengine.services.Indexing;
 import searchengine.services.StatisticsService;
 
 import java.time.LocalDateTime;
@@ -43,57 +44,7 @@ public class ApiController {
 
     @GetMapping("/startIndexing")
     public ResponseEntity startIndexing () {
-        MapSiteRecursive.setLinksPool(new ArrayList<>());
-
-        for (SiteConf siteConf : sitesList.getSites()) {
-            Integer id = deleteSite(siteConf.getName());
-            Site site = addSite(siteConf);
-
-            try {
-                ArrayList<String> listUrl = MapCreate.create(site, pageRepository);
-
-                for (String path : listUrl) {
-                    Page page = new Page();
-                    page.setSite(site);
-                    page.setPath(path);
-                    pageRepository.save(page);
-                }
-            } catch (Exception ex) {
-                site.setStatusTime(LocalDateTime.now());
-                site.setStatus(Status.FAILED);
-                site.setLastError("Произошла ошибка: " + ex.getMessage());
-                siteRepository.save(site);
-                continue;
-            }
-            site.setStatus(Status.INDEXED);
-            site.setStatusTime(LocalDateTime.now());
-            siteRepository.save(site);
-        }
-        return null;
-    }
-
-    private Site addSite (SiteConf siteConf) {
-        Site site = new Site();
-        site.setName(siteConf.getName());
-        site.setUrl(siteConf.getUrl());
-        site.setStatus(Status.INDEXING);
-        site.setStatusTime(LocalDateTime.now());
-        Site newSite = siteRepository.save(site);
-        return newSite;
-    }
-
-    private Integer deleteSite (String name) {
-        Iterable<Site> siteIterable = siteRepository.findAll();
-        Integer id = null;
-        for (Site site : siteIterable) {
-            if (site.getName().equals(name)) {
-                id = site.getId();
-            }
-        }
-        if (id != null) {
-            siteRepository.deleteById(id);
-        }
-        return id;
+       return Indexing.siteIndexing(siteRepository, pageRepository, sitesList);
     }
 
     public PageRepository getPageRepository() {
