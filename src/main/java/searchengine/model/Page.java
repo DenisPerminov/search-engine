@@ -14,7 +14,7 @@ public class Page {
     @Column(name = "path", columnDefinition = "TEXT", nullable = false)
     private String path;
     private int code;
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String content;
 
     public int getId() {
