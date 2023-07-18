@@ -21,7 +21,7 @@ public class ParseWeb {
     public static PageRepository pageRepository;
 
     public ParseWeb(ArrayList<String> linksFiltred, PageRepository pageRepository) {
-        //this.linksFiltred = linksFiltred;
+        this.linksFiltred = linksFiltred;
         this.pageRepository = pageRepository;
     }
 
@@ -29,17 +29,21 @@ public class ParseWeb {
                                 System.out.println("Запущен парсинг страницы: " + url);
         links = new ConcurrentSkipListSet<>();
         try {
-            sleep(200);
+            sleep(1000);
             Connection connection = Jsoup.connect(url)
                     .ignoreHttpErrors(true)
-                    .followRedirects(true);
+                    .followRedirects(true)
+                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .referrer("http://www.google.com");
             Document document = connection.get();
             Elements elements = document.select("body").select("a");
             for (Element element : elements) {
                 String link = element.absUrl("href");
+                                            System.out.println("Проверяем элемент: " + link);
                 Iterable<Page> pageIterable = pageRepository.findAll();
+                                            System.out.println("Достаем страницы для сравнения: " + pageIterable.toString());
                 for (Page page : pageIterable) {
-                    System.out.println("Сравниваем: " + link + " = " + page.getPath());
+                                            System.out.println("Сравниваем: " + link + " = " + page.getPath());
                     if (isLink(link) && !isFile(link) && !page.getPath().contains(link) && !links.contains(link)) {
                         links.add(link);
                     }
@@ -56,7 +60,7 @@ public class ParseWeb {
     }
 
     private static boolean isLink(String link) {
-        String regex = "/";
+        String regex = "//";
         return link.contains(regex);
     }
 
@@ -73,6 +77,7 @@ public class ParseWeb {
                 || link.contains(".doc")
                 || link.contains(".pptx")
                 || link.contains(".docx")
-                || link.contains("?_ga");
+                || link.contains("?_ga")
+                || link.contains("php");
     }
 }

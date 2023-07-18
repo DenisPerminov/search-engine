@@ -1,5 +1,9 @@
 package searchengine.mapsite;
 
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import searchengine.model.Page;
 import searchengine.model.Site;
 import searchengine.repository.PageRepository;
 
@@ -11,6 +15,21 @@ public class MapCreate {
     public static ArrayList<String> create(Site site, PageRepository pageRepository) {
                         System.out.println("Создание карты сайта запущено");
         MapSite mapSite = new MapSite(site.getUrl());
+
+        try {
+            Page firstPage = new Page();
+            firstPage.setSite(site);
+            firstPage.setPath(mapSite.getUrl());
+            Connection connection = Jsoup.connect(mapSite.getUrl());
+            Document doc = connection.get();
+            firstPage.setContent(doc.outerHtml());
+            firstPage.setCode(connection.response().statusCode());
+            pageRepository.save(firstPage);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
         MapSiteRecursive task = new MapSiteRecursive(mapSite, site, pageRepository);
         new ForkJoinPool().invoke(task);
 

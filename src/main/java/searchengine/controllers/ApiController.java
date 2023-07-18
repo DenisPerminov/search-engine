@@ -38,6 +38,11 @@ public class ApiController {
        return Indexing.startIndexing(siteRepository, pageRepository, sitesList);
     }
 
+    @GetMapping("/stopIndexing")
+    public ResponseEntity stopIndexing () {
+        return Indexing.stopIndexing();
+    }
+
     public PageRepository getPageRepository() {
         return pageRepository;
     }

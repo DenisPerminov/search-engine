@@ -1,5 +1,6 @@
 package searchengine.services;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,13 @@ import java.util.ArrayList;
 public class Indexing {
 
     public static ResponseEntity startIndexing(SiteRepository siteRepository, PageRepository pageRepository, SitesList sitesList) {
+
         MapSiteRecursive.setLinksPool(new ArrayList<>());
 
         for (SiteConf siteConf : sitesList.getSites()) {
             Integer id = deleteSite(siteConf.getName(), siteRepository);
             Site site = addSite(siteConf, siteRepository);
+
 
             try {
                 ArrayList<String> listUrl = MapCreate.create(site, pageRepository);
@@ -34,11 +37,16 @@ public class Indexing {
                     page.setSite(site);
                     page.setPath(path);
 
-                    Document doc = Jsoup.connect(path).get();
-                    page.setContent(doc.html());
-                    System.out.println("Добвляем страницу с текстом: " + page.getContent());
+                                        System.out.println("Добавляем: " + path);
 
+                    Connection connection = Jsoup.connect(path);
+                    Document doc = connection.get();
+                    page.setContent(doc.outerHtml());
+
+                    page.setCode(connection.response().statusCode());
                     pageRepository.save(page);
+
+                                            System.out.println("Добавили: " + page.getPath());
                 }
 
             } catch (Exception ex) {
@@ -79,5 +87,10 @@ public class Indexing {
             siteRepository.deleteById(id);
         }
         return id;
+    }
+
+    public static ResponseEntity stopIndexing () {
+
+        return ResponseEntity.status(HttpStatus.MULTI_STATUS).body(null);
     }
 }

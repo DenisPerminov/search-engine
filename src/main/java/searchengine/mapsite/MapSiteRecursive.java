@@ -1,5 +1,7 @@
 package searchengine.mapsite;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import searchengine.model.Page;
 import searchengine.model.Site;
 import searchengine.repository.PageRepository;
