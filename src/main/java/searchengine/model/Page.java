@@ -1,6 +1,7 @@
 package searchengine.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(indexes = @Index(columnList = "path", unique = true))
@@ -16,6 +17,9 @@ public class Page {
     private int code;
     @Column(columnDefinition = "mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String content;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "page_id")
+    private List<Indexes> indexes;
 
     public int getId() {
         return id;

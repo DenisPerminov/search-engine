@@ -21,7 +21,3 @@ indexing-settings:
 
     - url: http://radiomv.ru/
       name: radiomv
-    - url: http://lenta.ru/
-      name: lenta
-    - url: http://playback.ru/
-      name: playback

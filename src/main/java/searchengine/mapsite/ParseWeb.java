@@ -26,7 +26,6 @@ public class ParseWeb {
     }
 
     public static ConcurrentSkipListSet<String> getLinks(String url) {
-                                System.out.println("Запущен парсинг страницы: " + url);
         links = new ConcurrentSkipListSet<>();
         try {
             sleep(1000);
@@ -39,11 +38,8 @@ public class ParseWeb {
             Elements elements = document.select("body").select("a");
             for (Element element : elements) {
                 String link = element.absUrl("href");
-                                            System.out.println("Проверяем элемент: " + link);
                 Iterable<Page> pageIterable = pageRepository.findAll();
-                                            System.out.println("Достаем страницы для сравнения: " + pageIterable.toString());
                 for (Page page : pageIterable) {
-                                            System.out.println("Сравниваем: " + link + " = " + page.getPath());
                     if (isLink(link) && !isFile(link) && !page.getPath().contains(link) && !links.contains(link)) {
                         links.add(link);
                     }

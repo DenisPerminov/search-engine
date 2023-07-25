@@ -24,6 +24,9 @@ public class Site {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "site_id")
     private List<Page> pages;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "site_id")
+    private List<Lemma> lemmas;
 
     public int getId() {
         return id;

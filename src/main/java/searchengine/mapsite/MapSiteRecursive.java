@@ -19,6 +19,7 @@ public class MapSiteRecursive extends RecursiveTask<ArrayList<String>> {
     private static ArrayList<Page> pagePool = new ArrayList<>();
     private SiteRepository siteRepository;
     private PageRepository pageRepository;
+    private static List<MapSiteRecursive> taskManager = new ArrayList<>();
 
     public MapSiteRecursive(MapSite mapSite, Site site, PageRepository pageRepository) {
         this.mapSite = mapSite;
@@ -55,6 +56,7 @@ public class MapSiteRecursive extends RecursiveTask<ArrayList<String>> {
             MapSiteRecursive task = new MapSiteRecursive(child, site, pageRepository);
             task.fork();
             taskList.add(task);
+            taskManager.add(task);
         }
         
         for (MapSiteRecursive task : taskList) {
@@ -69,5 +71,11 @@ public class MapSiteRecursive extends RecursiveTask<ArrayList<String>> {
 
     public static void setLinksPool(ArrayList<String> linksPool) {
         MapSiteRecursive.linksPool = linksPool;
+    }
+
+    public static void stop () {
+        for (MapSiteRecursive task : taskManager) {
+            task.cancel(true);
+        }
     }
 }

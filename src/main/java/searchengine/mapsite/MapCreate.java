@@ -13,7 +13,6 @@ import java.util.concurrent.ForkJoinPool;
 public class MapCreate {
 
     public static ArrayList<String> create(Site site, PageRepository pageRepository) {
-                        System.out.println("Создание карты сайта запущено");
         MapSite mapSite = new MapSite(site.getUrl());
 
         try {
@@ -42,10 +41,6 @@ public class MapCreate {
         ArrayList<String> listUrl = new ArrayList<>();
         listUrl.add(mapSite.getUrl());
         mapSite.getSiteMapChildrens().forEach(child -> listUrl.addAll(createSiteMapString(child)));
-        //String tab = String.join("", Collections.nCopies(indent, "\t"));
-        //StringBuilder result = new StringBuilder(tab + mapSite.getUrl());
-        //mapSite.getSiteMapChildrens().forEach(child -> result.append("\n")
-          //      .append(createSiteMapString(child, indent + 1)));
         return listUrl;
     }
 }
