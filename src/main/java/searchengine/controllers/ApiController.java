@@ -9,6 +9,7 @@ import searchengine.repository.IndexRepository;
 import searchengine.repository.LemmaRepository;
 import searchengine.repository.PageRepository;
 import searchengine.repository.SiteRepository;
+import searchengine.search.Find;
 import searchengine.services.Indexing;
 import searchengine.services.StatisticsService;
 
@@ -56,6 +57,13 @@ public class ApiController {
     public ResponseEntity indexPage(@PathVariable String url) throws IOException {
         initial();
         return Indexing.pageIndexing(url);
+    }
+
+    @GetMapping ("/search{query}")
+    public ResponseEntity search(@PathVariable String query) throws IOException {
+                            System.out.println("Поиск: " + query);
+        Find.search(query);
+        return null;
     }
 
     public void initial() {
