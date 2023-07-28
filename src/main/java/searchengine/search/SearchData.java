@@ -56,4 +56,5 @@ public class SearchData {
     public void setRelevance(double relevance) {
         this.relevance = relevance;
     }
+
 }

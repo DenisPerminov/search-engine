@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Lemma {
+public class Lemma implements Comparable<Lemma> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,7 +13,7 @@ public class Lemma {
     private Site site;
     @Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String lemma;
-    private int frequency;
+    private Integer frequency;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "lemma_id")
     private List<Indexes> indexes;
@@ -48,5 +48,10 @@ public class Lemma {
 
     public void setFrequency(int frequency) {
         this.frequency = frequency;
+    }
+
+    @Override
+    public int compareTo(Lemma o) {
+        return frequency.compareTo(o.frequency);
     }
 }

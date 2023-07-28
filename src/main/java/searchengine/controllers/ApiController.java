@@ -1,7 +1,9 @@
 package searchengine.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import searchengine.config.SitesList;
 import searchengine.dto.statistics.StatisticsResponse;
@@ -53,17 +55,17 @@ public class ApiController {
         return Indexing.stopIndexing();
     }
 
-    @PostMapping ("/indexPage{url}")
-    public ResponseEntity indexPage(@PathVariable String url) throws IOException {
+    @PostMapping ("/indexPage")
+    public ResponseEntity indexPage(@RequestParam String url) throws IOException {
         initial();
         return Indexing.pageIndexing(url);
     }
 
-    @GetMapping ("/search{query}")
-    public ResponseEntity search(@PathVariable String query) throws IOException {
-                            System.out.println("Поиск: " + query);
+    @GetMapping ("/search")
+    public ResponseEntity search(@RequestParam String query) throws IOException {
+        initialSearch();
         Find.search(query);
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     public void initial() {
@@ -71,5 +73,10 @@ public class ApiController {
         Indexing.setPageRepository(pageRepository);
         Indexing.setLemmaRepository(lemmaRepository);
         Indexing.setIndexRepository(indexRepository);
+    }
+
+    public void initialSearch() {
+        Find.setLemmaRepository(lemmaRepository);
+        Find.setIndexRepository(indexRepository);
     }
 }

@@ -12,7 +12,7 @@ public class Indexes {
     private Page page;
     @ManyToOne(fetch = FetchType.LAZY)
     private Lemma lemma;
-    private float rank;
+    private Float rank;
 
     public int getId() {
         return id;
